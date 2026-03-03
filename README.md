@@ -14,7 +14,7 @@
 
 ---
 
-### 🛍️ User-Facing Features (What Interviewers Will See)
+### 🛍️ User-Facing Features
 
 When interacting with the platform, users and administrators experience a fully functional e-commerce ecosystem:
 
