@@ -6,21 +6,22 @@ https://hill-harvest-organics.vercel.app/
 
 ### 💻 Tech Stack & Infrastructure
 *   **Backend:** Java 21, Spring Boot 3, Spring Data JPA, Spring Security
-*   **Frontend:** React, TypeScript, React Router, Context API
+*   **RAG & LLMs:** Retrieval-Augmented Generation (RAG), Spring AI, PGVector (HNSW), Embeddings, Google Gemini, Semantic Search
 *   **Database:** PostgreSQL (hosted on **Supabase**) utilizing UUIDv7 primary keys
 *   **Cloud & Storage:** AWS S3 (for product images & invoice storage), **AWS CloudFront** (configured in same `ap-south-1` region as S3 to minimize origin-fetch latency and reduce data egress costs), AWS SES (for transactional emails)
 *   **Messaging:** AWS SQS, Spring Events (Observer Pattern)
 *   **Payments:** Razorpay Integration
 *   **Observability:** Prometheus & Grafana with a **Sidecar Grafana Agent**, Loki (logging)
 *   **Deployment:** Docker, CI/CD pipelines (GitHub Actions) deployed to **AWS Lightsail**. Utilizing a **Sidecar Redis** container for caching and rate-limiting (with plans to migrate to a managed service).
+*   **Frontend:** React, TypeScript, React Router, Context API
 
 ---
 
 ### 🛍️ User-Facing Features
 
 When interacting with the platform, users and administrators experience a fully functional e-commerce ecosystem:
-
 *   **Authentication & Profiles:** Users can sign up via Phone/OTP or Google OAuth2. They have a dedicated profile dashboard to manage addresses and view order history.
+*   **AI Chatbot (RAG):** An intelligent product-assistant chatbot enabling natural language queries, semantic search, and personalized recommendations using a Retrieval-Augmented Generation (RAG) pipeline.
 *   **Dynamic Product Catalog:** A responsive storefront displaying organic products with real-time stock availability, filtering, and detailed product pages.
 *   **Seamless Cart Experience:** Users can add/remove items with a smart cart that automatically merges "Guest" carts into "Authenticated" carts upon login. Built-in rate-limiting protects against checkout spam.
 *   **Secure Checkout & Payments:** End-to-end checkout flow integrated with Razorpay. The system handles payment success/failures via secure Webhooks.
