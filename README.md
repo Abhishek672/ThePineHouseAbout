@@ -21,7 +21,7 @@ https://hill-harvest-organics.vercel.app/
 
 When interacting with the platform, users and administrators experience a fully functional e-commerce ecosystem:
 *   **Authentication & Profiles:** Users can sign up via Phone/OTP or Google OAuth2. They have a dedicated profile dashboard to manage addresses and view order history.
-*   **AI Chatbot (RAG):** An intelligent product-assistant chatbot enabling natural language queries, semantic search, and personalized recommendations using a Retrieval-Augmented Generation (RAG) pipeline.
+*   **AI Chatbot (RAG):** An intelligent product-assistant chatbot enabling natural language queries, semantic search using a Retrieval-Augmented Generation (RAG) pipeline.
 *   **Dynamic Product Catalog:** A responsive storefront displaying organic products with real-time stock availability, filtering, and detailed product pages.
 *   **Seamless Cart Experience:** Users can add/remove items with a smart cart that automatically merges "Guest" carts into "Authenticated" carts upon login. Built-in rate-limiting protects against checkout spam.
 *   **Secure Checkout & Payments:** End-to-end checkout flow integrated with Razorpay. The system handles payment success/failures via secure Webhooks.
