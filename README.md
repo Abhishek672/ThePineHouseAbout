@@ -4,6 +4,10 @@
 
 https://hill-harvest-organics.vercel.app/
 
+## 🎥 Demo
+
+![Chatbot Demo](assets/demo.gif)
+
 ### 💻 Tech Stack & Infrastructure
 *   **Backend:** Java 21, Spring Boot 3, Spring Data JPA, Spring Security
 *   **RAG & LLMs:** Retrieval-Augmented Generation (RAG), Spring AI, PGVector (HNSW), Embeddings, Google Gemini, Semantic Search
