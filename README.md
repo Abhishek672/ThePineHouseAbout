@@ -4,10 +4,6 @@
 
 https://hill-harvest-organics.vercel.app/
 
-## 🎥 Demo
-
-![Chatbot Demo](assets/demo.gif)
-
 ### 💻 Tech Stack & Infrastructure
 *   **Backend:** Java 21, Spring Boot 3, Spring Data JPA, Spring Security
 *   **RAG & LLMs:** Retrieval-Augmented Generation (RAG), Spring AI, PGVector (HNSW), Embeddings, Google Gemini, Semantic Search
@@ -43,3 +39,11 @@ When interacting with the platform, users and administrators experience a fully 
 *   **Database Optimization (UUIDv7, Indexing & N+1 Fixes):** Proactively eliminated N+1 database querying issues using JPA Join Fetches. Migrated the entire database from randomized UUIDv4 keys to sequential, time-ordered **UUIDv7** keys to drastically reduce PostgreSQL B-tree index fragmentation and optimize `INSERT` speeds. Implemented **B-Tree Indexing and Composite Indexing** across heavy-query columns (like multi-tenant or relational user queries) and applied precise **Pagination strategies** to handle large datasets effectively without loading them entirely into server memory.
 *   **Idempotent Event Consumers:** Built SQS consumers (like the Notification Service and Invoice Generator) with strict idempotency checks using Redis and DB state tracking. This ensures that even if AWS SQS delivers a message twice, users won't receive duplicate emails or invoices.
 *   **Docker & CI/CD Pipelines:** The application is fully containerized using Docker, with automated CI/CD pipelines configured to ensure code quality and reliable, repeatable deployments.
+
+---
+
+## 🎥 Demo (Store Assistant)
+
+<p align="center">
+  <img src="assets/output.gif" width="300"/>
+</p>
