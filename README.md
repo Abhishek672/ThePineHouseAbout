@@ -2,7 +2,6 @@
 
 **Hill Harvest Organics** is a modern, full-stack E-commerce platform dedicated to selling organic produce. Built as a **Modular Monolith** with a Package-by-Feature (Domain) architecture, the project prioritizes robustness, security, and a seamless user experience.
 
-https://hill-harvest-organics.vercel.app/
 
 ### 💻 Tech Stack & Infrastructure
 *   **Backend:** Java 21, Spring Boot 3, Spring Data JPA, Spring Security
