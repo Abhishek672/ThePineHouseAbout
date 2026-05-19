@@ -1,7 +1,5 @@
 # Hill Harvest Organics - Project Summary
 
-# Hill Harvest Organics
-
 > Multi-cloud monorepo — Spring Boot on AWS Lightsail + FastAPI/LangGraph on self-managed GCP k3s — with event-driven SQS messaging, GitOps deployments via ArgoCD, and Terraform-managed infrastructure.
 
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
