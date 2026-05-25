@@ -1,4 +1,4 @@
-# Hill Harvest Organics - Project Summary
+# The Pine House, a modern cloud native mini ecommerce store - Project Summary
 
 > Multi-cloud monorepo — Spring Boot on AWS Lightsail + FastAPI/LangGraph on self-managed GCP k3s — with event-driven SQS messaging, GitOps deployments via ArgoCD, and Terraform-managed infrastructure.
 
