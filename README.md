@@ -169,5 +169,6 @@ The **Flutter** app targets iOS and Android from a single codebase.
 ## 🎥 Demo (Store Assistant)
 
 <p align="center">
-  <img src="assets/output.gif" width="300"/>
+  <img src="assets/suggestionDemo.gif" width="300"/> </br>
+  <img src="assets/supportDemo.gif" width="300"/>
 </p>
