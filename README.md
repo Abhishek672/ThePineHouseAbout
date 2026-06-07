@@ -63,9 +63,12 @@ Hill-Harvest-Organics/
 - `CartCleanupService` and `OrderCleanupService` run as scheduled jobs
 
 **AI Integration**
-- `EmbeddingService` + `EmbeddingProducer` push new product data to SQS for async embedding
-- `FastApiProxyService` routes chat requests to the AI service with internal API key auth
-- `ChatService` manages session context
+- **Event-driven embedding pipeline** — `EmbeddingProducer` publishes product lifecycle events (create/update/delete) to AWS SQS; the AI service consumes these asynchronously via `EmbeddingWorker`, generating vector embeddings through the Gemini Embeddings API and upserting them into PGVector (Supabase) — keeping the product catalogue in sync without blocking the request path
+- **Knowledge base ingestion** — admin-uploaded Markdown documents (policies, FAQs, freshness guarantees) are stored in S3 and ingested via a header-based chunking pipeline; each `###` section becomes an independently retrievable chunk with a deterministic MD5 ID, making re-ingestion fully idempotent; chunks are scoped by `doc_type` and `category` so a full re-upload replaces only the affected section, not the entire collection
+- **Internal service mesh** — `FastApiProxyService` proxies chat and support requests from Spring Boot to the FastAPI AI service over HTTP with mutual API key authentication; forwards the user's JWT from the `httpOnly` cookie as a `Bearer` token so the AI service can make authenticated backend calls on the user's behalf (e.g. fetching live order data mid-conversation)
+- **Multi-agent support system** — LangGraph supervisor graph routes customer queries to specialised agents (order tracking, knowledge base RAG); the order agent calls back into the Spring Boot REST API using the forwarded identity to retrieve real-time order and shipment data
+- **RAG product chatbot** — LCEL pipeline with PGVector similarity search, per-user sliding window Redis memory, and dual-tier context (authenticated users get broader retrieval than guests)
+
 
 **Rate Limiting**
 - Custom `@RateLimit` annotation backed by a Redis-based `RateLimitAspect`
@@ -80,14 +83,22 @@ Hill-Harvest-Organics/
 ### Tech Stack
 | Layer | Technology |
 |---|---|
-| Runtime | Python + FastAPI |
-| Agent Framework | LangGraph + LangChain |
-| LLM Providers | Groq (primary) · Google Gemini · OpenRouter (fallbacks) |
-| Conversation Memory | Redis sidecar (in-pod) via `RedisChatMessageHistory` |
-| Vector Store (RAG) | PostgreSQL via `PGVector` (Supabase, shared with backend) |
+| Runtime | Python 3.11 + FastAPI |
+| Agent Framework | LangGraph (multi-agent supervisor graph) + LangChain LCEL |
+| LLM — Primary | Google Gemini 2.5 Flash |
+| LLM — Fallback | GPT-4o mini (support agent) · Groq Llama 3.1 8B (RAG chat) |
+| Embeddings | Gemini Embedding API (`gemini-embedding-001`, 768-dim) |
+| Vector Store | PGVector on Supabase — two isolated collections (products, knowledge base) |
+| Conversation Memory | Redis sidecar (in-pod) · sliding window via `RedisChatMessageHistory` |
+| Knowledge Base Storage | AWS S3 (Markdown docs) · AWS SQS (async product embedding events) |
 | Secrets | GCP Secret Manager → External Secrets Operator → K8s Secrets |
-| Deployment | k3s on GCP Compute VM · ArgoCD GitOps · Kustomize |
+| Deployment | k3s on GCP Compute VM · ArgoCD GitOps · GitHub Actions CI |
 
+### Key Design Decisions
+- **Resilient LLM routing** — tools bound to each model independently before building the fallback chain with `with_fallbacks(exceptions_to_handle=(Exception,))`; ensures tool-calling works correctly on both primary and fallback models
+- **Identity propagation** — Spring Boot extracts the user's JWT from the `httpOnly` cookie and forwards it as a `Bearer` token to FastAPI; the support agent uses this to call authenticated backend endpoints (e.g. live order lookup) mid-conversation
+- **Dual vector collections** — product embeddings and knowledge base chunks isolated in separate PGVector collections; similarity search is scoped per collection so policy docs never surface in product queries and vice versa
+- **Idempotent knowledge base ingestion** — Markdown documents chunked on `###` headers; each chunk assigned a deterministic MD5 ID (`type:category:heading`); re-uploading a document replaces only its chunks, not the full collection
 
 ### Architecture in the Pod
 Redis runs as a sidecar (not a separate service) to keep conversation memory local to the pod without the cost of a managed Redis instance.
@@ -169,6 +180,10 @@ The **Flutter** app targets iOS and Android from a single codebase.
 ## 🎥 Demo (Store Assistant)
 
 <p align="center">
+  <h3> 1. Catalog suggestions</h3>
   <img src="assets/suggestionDemo.gif" width="300"/> </br>
-  <img src="assets/supportDemo.gif" width="300"/>
+  <h3> 2. Support agent for queries related to orders</h3>
+  <img src="assets/supportDemo.gif" width="300"/> </br>
+  <h3> 3. Retrieval from knowledge base</h3>
+  <img src="assets/faq_policyAgent.gif" width="300"/>
 </p>
