@@ -1,180 +1,92 @@
-# The Pine House, a modern cloud native mini ecommerce store - Project Summary
+# The Pine House, a modern cloud native ecommerce store - Project Summary
+https://hill-harvest-organics.vercel.app/
 
-> Multi-cloud monorepo — Spring Boot on AWS Lightsail + FastAPI/LangGraph on self-managed GCP k3s — with event-driven SQS messaging, GitOps deployments via ArgoCD, and Terraform-managed infrastructure.
+> Multi-cloud monorepo — Spring Boot on AWS Lightsail + FastAPI/LangGraph on self-managed GCP cloud run — with event-driven SQS messaging, CI via GithubActions, and Terraform-managed infrastructure.
 
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
-![GCP](https://img.shields.io/badge/GCP-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)
-![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
 
----
+The platform handles product catalog, inventory, orders, payments, logistics, notifications, and AI-powered customer support.
 
-## Architecture Overview
+## Architecture
 
-The platform is a monorepo with four independently deployed services:
+![Service Architecture](./assets/serviceArch.png)
 
-```
+## Tech Stack
+
+### Backend
+
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge\&logo=springboot\&logoColor=white)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge\&logo=openjdk\&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge\&logo=postgresql\&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge\&logo=supabase\&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge\&logo=redis\&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge\&logo=amazonaws\&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge\&logo=docker\&logoColor=white)
+
+### AI Service
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge\&logo=python\&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge\&logo=fastapi\&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge\&logo=langchain\&logoColor=white)
+
+### Cloud & Infrastructure
+
+![GCP](https://img.shields.io/badge/GCP-4285F4?style=for-the-badge\&logo=googlecloud\&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge\&logo=terraform\&logoColor=white)
+
+## Key Features
+
+* Product catalog and inventory management
+* Customer authentication with Google OAuth
+* Cart and order management
+* Razorpay payments and webhook processing
+* Shiprocket logistics integration
+* SMS and email notifications
+* Slack-based admin operations
+* AI-powered customer support
+* RAG-based product and knowledge-base search
+* Redis-based caching, sessions, rate limiting and idempotency
+* Asynchronous processing using AWS SQS
+
+## Repository Structure
+
+```text
 Hill-Harvest-Organics/
-├── backend/          → Spring Boot API · AWS Lightsail · Docker
-├── ai_service/       → FastAPI + LangGraph AI agent · GCP k3s · GitOps
-├── frontend/         → React + TypeScript web app (learning)
-├── mobile_app/       → Flutter cross-platform app (learning)
-└── infrastructure/   → Terraform (GCP) · layered state management
+├── backend/          # Spring Boot backend
+├── ai_service/       # FastAPI + LangGraph AI service
+└── infrastructure/   # Terraform infrastructure
 ```
 
-**Two separate clouds, two deployment models:**
-- **AWS** runs the core business backend (Lightsail, S3, SQS, SES)
-- **GCP** runs the AI service on a self-managed k3s cluster with ArgoCD GitOps
+## Deployment
 
----
+The backend runs on **AWS**, while the AI service runs independently on **GCP Cloud Run**.
 
-## Backend — Spring Boot on AWS
+Infrastructure is provisioned using Terraform and deployments are automated through GitHub Actions.
 
-### Tech Stack
-| Layer | Technology |
-|---|---|
-| Runtime | Java + Spring Boot |
-| Database | PostgreSQL (Supabase) + Spring Data JPA |
-| Cache | Redis (rate limiting, session) |
-| Auth | JWT + Spring Security + Google OAuth + OTP (SMS 2FA) |
-| File Storage | AWS S3 |
-| Async Messaging | AWS SQS (multiple queues) |
-| Email | AWS SES |
-| Payments | Razorpay (webhooks) |
-| Logistics | Shiprocket (webhooks) |
-| Observability | Spring Actuator + Grafana Agent + log rotation |
-| Deployment | Docker + GHCR + AWS Lightsail |
+## Integrations
 
-### Key Domain & Services
-
-**Notifications & Observability**
-- `NotificationOrchestrator` routes events to SQS → consumers trigger AWS SES emails / SMS
-- Slack alerts for order events and logistics events (separate SQS queues)
-- `CartCleanupService` and `OrderCleanupService` run as scheduled jobs
-
-**AI Integration**
-- **Event-driven embedding pipeline** — `EmbeddingProducer` publishes product lifecycle events (create/update/delete) to AWS SQS; the AI service consumes these asynchronously via `EmbeddingWorker`, generating vector embeddings through the Gemini Embeddings API and upserting them into PGVector (Supabase) — keeping the product catalogue in sync without blocking the request path
-- **Knowledge base ingestion** — admin-uploaded Markdown documents (policies, FAQs, freshness guarantees) are stored in S3 and ingested via a header-based chunking pipeline; each `###` section becomes an independently retrievable chunk with a deterministic MD5 ID, making re-ingestion fully idempotent; chunks are scoped by `doc_type` and `category` so a full re-upload replaces only the affected section, not the entire collection
-- **Internal service mesh** — `FastApiProxyService` proxies chat and support requests from Spring Boot to the FastAPI AI service over HTTP with mutual API key authentication; forwards the user's JWT from the `httpOnly` cookie as a `Bearer` token so the AI service can make authenticated backend calls on the user's behalf (e.g. fetching live order data mid-conversation)
-- **Multi-agent support system** — LangGraph supervisor graph routes customer queries to specialised agents (order tracking, knowledge base RAG); the order agent calls back into the Spring Boot REST API using the forwarded identity to retrieve real-time order and shipment data
-- **RAG product chatbot** — LCEL pipeline with PGVector similarity search, per-user sliding window Redis memory, and dual-tier context (authenticated users get broader retrieval than guests)
+* Google OAuth
+* Razorpay
+* Shiprocket
+* 2Factor.in
+* Slack
+* Grafana Cloud
+* Google Gemini
+* OpenAI
+* Groq
+* Jina AI
 
 
-**Rate Limiting**
-- Custom `@RateLimit` annotation backed by a Redis-based `RateLimitAspect`
+* Google OAuth
+* Razorpay
+* Shiprocket
+* 2Factor.in
+* Slack
+* Grafana Cloud
+* Google Gemini
+* OpenAI
+* Groq
+* Jina AI
 
-**Event-Driven Architecture**
-- aynchronous processing of events using AWS SQS and producer consumer architecture
-
----
-
-## AI Service — FastAPI + LangGraph on GCP
-
-### Tech Stack
-| Layer | Technology |
-|---|---|
-| Runtime | Python 3.11 + FastAPI |
-| Agent Framework | LangGraph (multi-agent supervisor graph) + LangChain LCEL |
-| LLM — Primary | Google Gemini 2.5 Flash |
-| LLM — Fallback | GPT-4o mini (support agent) · Groq Llama 3.1 8B (RAG chat) |
-| Embeddings | Gemini Embedding API (`gemini-embedding-001`, 768-dim) |
-| Vector Store | PGVector on Supabase — two isolated collections (products, knowledge base) |
-| Conversation Memory | Redis sidecar (in-pod) · sliding window via `RedisChatMessageHistory` |
-| Knowledge Base Storage | AWS S3 (Markdown docs) · AWS SQS (async product embedding events) |
-| Secrets | GCP Secret Manager → External Secrets Operator → K8s Secrets |
-| Deployment | k3s on GCP Compute VM · ArgoCD GitOps · GitHub Actions CI |
-
-### Key Design Decisions
-- **Resilient LLM routing** — tools bound to each model independently before building the fallback chain with `with_fallbacks(exceptions_to_handle=(Exception,))`; ensures tool-calling works correctly on both primary and fallback models
-- **Identity propagation** — Spring Boot extracts the user's JWT from the `httpOnly` cookie and forwards it as a `Bearer` token to FastAPI; the support agent uses this to call authenticated backend endpoints (e.g. live order lookup) mid-conversation
-- **Dual vector collections** — product embeddings and knowledge base chunks isolated in separate PGVector collections; similarity search is scoped per collection so policy docs never surface in product queries and vice versa
-- **Idempotent knowledge base ingestion** — Markdown documents chunked on `###` headers; each chunk assigned a deterministic MD5 ID (`type:category:heading`); re-uploading a document replaces only its chunks, not the full collection
-
-### Architecture in the Pod
-Redis runs as a sidecar (not a separate service) to keep conversation memory local to the pod without the cost of a managed Redis instance.
-
-### Deployment (GitOps with ArgoCD) 
-- ArgoCD Core (running in the cluster) detects the manifest change in and auto-syncs
----
-
-## Infrastructure — Terraform + Kubernetes
-
-### Terraform (GCP)
-
-State is stored in **GCP Cloud Storage** with a layered structure:
-
-```
-infrastructure/terraform/ai_service/
-├── bootstrap/  
-├── foundation/   
-├── workloads/    
-└── modules/
-    ├── gcp_compute_vm/
-    ├──..
-```
-
-### Kubernetes (k3s on GCP)
-
-**Self-managed k3s** instead of GKE to avoid ~$75/month cluster management fees.
-
-| Component | Purpose |
-|---|---|
-| **k3s** | Lightweight K8s distribution, single-node |
-| **Traefik** (built-in) | Ingress controller — avoids GCP Cloud Load Balancer (~$18/month) |
-| **ArgoCD Core** | Lightweight GitOps controller (no UI/API server — pure sync engine) |
-| **External Secrets Operator** | Syncs secrets from GCP Secret Manager into K8s Secrets (1h refresh) |
-| **Kustomize** | Image tag management for GitOps deployments |
-
----
-
-## Application Features
-
-**Customer-facing**
-- Browse products by category and tag
-- Product detail pages with reviews and live stock status
-- Cart management (guest and authenticated)
-- Checkout with saved address support
-- Razorpay payment integration
-- Order tracking with delivery status
-- AI chat assistant (product discovery, order queries)
-
-**Admin Dashboard**
-- Product and inventory management (with S3 image upload)
-- Category and tag management
-- Order management with status transitions
-- Payment records and refund triggers
-- User management
-- Shipment management (Shiprocket)
-
-**Authentication**
-- Phone OTP login (guest + registered)
-- Google OAuth
-- JWT-based session with refresh
-
----
-
-## Frontend & Mobile
-
-> Note: React and Flutter are technologies I am actively learning. The frontend and mobile app are functional but represent my growth areas rather than production-hardened code.
-
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
-
-The **React + TypeScript** frontend covers the full customer journey and a complete admin dashboard, bundled with Vite.  
-The **Flutter** app targets iOS and Android from a single codebase.
-
----
 
 ## 🎥 Demo (Store Assistant)
 
