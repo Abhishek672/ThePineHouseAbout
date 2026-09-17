@@ -1,5 +1,5 @@
 # The Pine House, a modern cloud native ecommerce store - Project Summary
-https://hill-harvest-organics.vercel.app/
+https://thepinehouse.in/
 
 > Multi-cloud monorepo — Spring Boot on AWS Lightsail + FastAPI/LangGraph on self-managed GCP cloud run — with event-driven SQS messaging, CI via GithubActions, and Terraform-managed infrastructure.
 
