@@ -14,7 +14,7 @@ The platform handles product catalog, inventory, orders, payments, logistics, no
 ---
 
 ### AI Service
-![Service Architecture](./assets/aiServiceArchitecture.png)
+![Service Architecture](./assets/AiServiceArchitecture.png)
 
 ---
 
