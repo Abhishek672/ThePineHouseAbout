@@ -8,9 +8,17 @@ The platform handles product catalog, inventory, orders, payments, logistics, no
 
 ## Architecture
 
+### Backend Service
 ![Service Architecture](./assets/serviceArch.png)
 
-## Tech Stack
+---
+
+### AI Service
+![Service Architecture](./assets/aiServiceArchitecture.png)
+
+---
+
+### Tech Stack
 
 ### Backend
 
